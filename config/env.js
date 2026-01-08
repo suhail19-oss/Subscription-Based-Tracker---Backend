@@ -6,4 +6,5 @@ config({
   path: `.env.${env}.local`,
 });
 
-export const { PORT, NODE_ENV, MONGODB_URL } = process.env;
+export const { PORT, NODE_ENV, MONGODB_URL, JWT_SECRET, JWT_EXPIRES_IN } =
+  process.env;
