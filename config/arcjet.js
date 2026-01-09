@@ -6,7 +6,7 @@ const aj = arcjet({
   rules: [
     shield({ mode: "LIVE" }),
 
-    ...(NODE_ENV === "development"
+    ...(NODE_ENV === "production"
       ? [
           detectBot({
             mode: "LIVE",

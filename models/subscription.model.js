@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const subscriptionSchema = new mongoose.Schema(
   {
     name: {
+      type: String,
       trim: true,
       minLength: 2,
       maxLength: 50,
@@ -49,7 +50,6 @@ const subscriptionSchema = new mongoose.Schema(
     },
     renewalDate: {
       type: Date,
-      required: true,
       validate: {
         validator: function (value) {
           return value > this.startDate;
@@ -67,7 +67,7 @@ const subscriptionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-subscriptionSchema.pre("save", function (next) {
+subscriptionSchema.pre("save", async function () {
   if (!this.renewalDate) {
     const renewalPeriods = {
       daily: 1,
@@ -75,15 +75,16 @@ subscriptionSchema.pre("save", function (next) {
       monthly: 30,
       yearly: 365,
     };
+
     this.renewalDate = new Date(this.startDate);
     this.renewalDate.setDate(
       this.renewalDate.getDate() + renewalPeriods[this.frequency]
     );
   }
+
   if (this.renewalDate < new Date()) {
     this.status = "expired";
   }
-  next();
 });
 
 const Subcription = mongoose.model("Subscription", subscriptionSchema);
