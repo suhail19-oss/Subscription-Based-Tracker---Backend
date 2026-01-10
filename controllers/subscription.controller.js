@@ -1,6 +1,5 @@
 import Subscription from "../models/subscription.model.js";
 import { qstashClient } from "../config/upstash.js";
-import { SERVER_URL } from "../config/env.js";
 
 export const createSubscription = async (req, res, next) => {
   try {
@@ -8,9 +7,13 @@ export const createSubscription = async (req, res, next) => {
       ...req.body,
       user: req.user._id,
     });
+    console.log(
+      "QSTASH PUBLISH URL:",
+      `${process.env.PUBLIC_WORKFLOW_URL}/api/v1/workflows/subscription/reminder`
+    );
 
     await qstashClient.publishJSON({
-      url: `${SERVER_URL}/api/v1/workflows/subscription/reminder`,
+      url: `${process.env.PUBLIC_WORKFLOW_URL}/api/v1/workflows/subscription/reminder`,
       body: {
         subscriptionId: subscription._id.toString(),
       },
